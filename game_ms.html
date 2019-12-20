@@ -108,16 +108,16 @@
         var stage;
         var wordArr = ['abandon', 'abnormal', 'accommodate', 'beggar', 'beat', 'biology', 'comfortable', 'competition', 'compulsory', 'curious', 'deaf', 'debt', 'diligent', 'earthquake', 'elder', 'essential', 'exhibition', 'fare', 'fine', 'gain', 'goods', 'hesitate', 'horizon', 'identify', 'independent', 'instrument'];
         var defArr = ['버리다', '비정상적인', '수용하다', '거지, 걸인', '이기다, 때리다', '생물학', '안락한, 편안한', '경쟁', '강제적인', '궁금한', '청각장애의', '빚, 은혜', '부지런한', '지진', '연상의', '필수적인', '전시회', '요금', '벌금', '얻다', '상품', '망설이다', '수평선', '구별하다', '독립의', '기구'];
-        var curY = -30;
+        var curY = -30; // 의미카드의 y값을 위한 초기값
         function init() {
-            //canvas를 stage로 설정하고 시작
+            // canvas를 stage로 설정하고 시작
             stage = new createjs.Stage("canvas");
 
-            //랜덤 단어 설정
+            // 랜덤 단어 설정
             var numbers = [];
             randomWord(26, numbers);
 
-            //단어+의미 카드 짝 생성
+            // 단어카드와 의미카드 짝 생성
             var box1, word1, wordBox1, dbox1, def1, defbox1;
             createBox(box1, word1, wordBox1, dbox1, def1, defbox1, numbers[0]);
             var box2, word2, wordBox2, dbox2, def2, defbox2;
@@ -136,8 +136,9 @@
             stage.update();
         }
 
+        // <게임에 사용될 단어를 선정하기 위한 랜덤 숫자 함수>
         function randomWord(num, numbers) {
-            var resnum = 0;
+            // 0부터 (num-1)의 랜덤한 숫자를 numbers 배열에 저장
             for (i=0; i<num; i++) {
                 numbers[i] = Math.floor(Math.random()*num);
                 for (j=0; j<i; j++) {
@@ -150,8 +151,9 @@
             console.log(numbers);
         }
 
+        // <단어카드와 의미카드 짝 생성 함수>
         function createBox(nbox, nword, nwordbox, ndbox, ndef, ndefbox, index) {
-            //단어카드
+            // 단어카드(shape, text, container) 선언, 스타일과 위치 지정
             nbox = new createjs.Shape();
             nbox.graphics.beginFill("salmon").drawRoundRect(0, 0, 150, 50, 10);
 
@@ -168,7 +170,7 @@
 
             stage.addChild(nwordbox);
 
-            //의미카드
+            // 의미카드(shape, text, container) 선언, 스타일과 위치 지정
             ndbox = new createjs.Shape();
             ndbox.graphics.beginFill("#FF9900").drawRoundRect(0, 0, 150, 50, 10);
 
@@ -186,10 +188,11 @@
 
             stage.addChild(ndefbox);
 
-            //카드들의 함수
+            // 카드에 마우스를 클릭했을 때 offset 지정
             nwordbox.on("mousedown", function(evt) {
                 woffset = {x: nwordbox.x - stage.mouseX, y:nwordbox.y - stage.mouseY};
             });
+            // 카드를 움직였을 때 위치 변경
             nwordbox.on("pressmove", function(evt) {
                 nwordbox.x = stage.mouseX+woffset.x;
                 nwordbox.y = stage.mouseY+woffset.y;
@@ -207,9 +210,10 @@
 
             stage.update();
 
-            //tick 함수
+            
             createjs.Ticker.setFPS(20);
             createjs.Ticker.on("tick", function(evt) {
+                // 짝이 맞는 단어-의미카드가 일정 거리로 가까워지면 투명도가 높아짐
                 var diffX = nwordbox.x - ndefbox.x;
                 var diffY = nwordbox.y - ndefbox.y;
                 var distance = Math.round(Math.sqrt(diffX*diffX+diffY*diffY));
